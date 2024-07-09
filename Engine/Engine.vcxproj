@@ -20,11 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="applicationclass.hpp" />
+    <ClInclude Include="d3dclass.hpp" />
     <ClInclude Include="inputclass.hpp" />
     <ClInclude Include="systemclass.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="applicationclass.cpp" />
+    <ClCompile Include="d3dclass.cpp" />
     <ClCompile Include="inputclass.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="systemclass.cpp" />
