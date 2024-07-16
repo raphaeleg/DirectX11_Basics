@@ -33,9 +33,9 @@ public:
 
     ID3D11Device* GetDevice() { return device; }
     ID3D11DeviceContext* GetDeviceContext() { return deviceContext; }
-    void GetProjectionMatrix(XMMATRIX& m) const { m = projectionMatrix; }
-    void GetWorldMatrix(XMMATRIX& m) const { m = worldMatrix; }
-    void GetOrthoMatrix(XMMATRIX& m) const { m = orthoMatrix; }
+    XMMATRIX GetProjectionMatrix() const { return projectionMatrix; }
+    XMMATRIX GetWorldMatrix() const { return worldMatrix; }
+    XMMATRIX GetOrthoMatrix() const { return orthoMatrix; }
 
     void GetVideoCardInfo(char* cardName, int& memory) const;
 

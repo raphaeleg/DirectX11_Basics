@@ -6,18 +6,61 @@ ApplicationClass::ApplicationClass(int screenWidth, int screenHeight, HWND hwnd)
 		MessageBox(hwnd, L"Couldn't Initialize Direct3D", L"Error", MB_OK);
 		return;
 	}
+
+	m_Camera = new CameraClass;
+	m_Camera->SetPosition(0.0f, 0.0f, -5.0f);
+	m_Model = new ModelClass(m_Direct3D->GetDevice());
+
+	if (not m_Model->isInitialized)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return;
+	}
+
+	m_ColorShader = new ColorShaderClass(m_Direct3D->GetDevice(), hwnd);
+	if (not m_ColorShader->isInitialized) {
+		MessageBox(hwnd, L"Could not initialize the color shader object.", L"Error", MB_OK);
+		return;
+	}
+
 	isInitialized = true;
 }
 
 ApplicationClass::~ApplicationClass() {
+	if (m_ColorShader) {
+		delete m_ColorShader;
+		m_ColorShader = 0;
+	}
+	if (m_Model) {
+		delete m_Model;
+		m_Model = 0;
+	}
+	if (m_Camera) {
+		delete m_Camera;
+		m_Camera = 0;
+	}
 	if (m_Direct3D) {
 		delete m_Direct3D;
 		m_Direct3D = 0;
+		m_Camera = 0;
+		m_Model = 0;
+		m_ColorShader = 0;
 	}
 }
 
 bool ApplicationClass::Render() {
-	m_Direct3D->BeginScene(0.5f, 0.5f, 0.5f, 1.0f);
+	m_Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+	m_Camera->Render();
+
+	XMMATRIX worldMatrix = m_Direct3D->GetWorldMatrix();
+	XMMATRIX viewMatrix = m_Camera->GetViewMatrix();
+	XMMATRIX projectionMatrix = m_Direct3D->GetProjectionMatrix();
+
+	m_Model->Render(m_Direct3D->GetDeviceContext());
+
+	bool success = m_ColorShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	if (not success) { return false; }
+
 	m_Direct3D->EndScene();
 	return true;
 }
