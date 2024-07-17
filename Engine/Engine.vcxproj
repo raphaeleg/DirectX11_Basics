@@ -26,6 +26,8 @@
     <ClInclude Include="inputclass.hpp" />
     <ClInclude Include="modelclass.hpp" />
     <ClInclude Include="systemclass.hpp" />
+    <ClInclude Include="textureclass.hpp" />
+    <ClInclude Include="textureshaderclass.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="applicationclass.cpp" />
@@ -36,10 +38,14 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="systemclass.cpp" />
+    <ClCompile Include="textureclass.cpp" />
+    <ClCompile Include="textureshaderclass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="color.ps" />
     <None Include="color.vs" />
+    <None Include="texture.ps" />
+    <None Include="texture.vs" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

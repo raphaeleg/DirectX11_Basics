@@ -9,11 +9,17 @@ ApplicationClass::ApplicationClass(int screenWidth, int screenHeight, HWND hwnd)
 
 	m_Camera = new CameraClass;
 	m_Camera->SetPosition(0.0f, 0.0f, -5.0f);
-	m_Model = new ModelClass(m_Direct3D->GetDevice());
 
+	m_Model = new ModelClass(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), textureFilename);
 	if (not m_Model->isInitialized)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return;
+	}
+
+	m_TextureShader = new TextureShaderClass(m_Direct3D->GetDevice(), hwnd);
+	if (not m_TextureShader->isInitialized) {
+		MessageBox(hwnd, L"Could not initialize the texture shader object.", L"Error", MB_OK);
 		return;
 	}
 
@@ -30,6 +36,10 @@ ApplicationClass::~ApplicationClass() {
 	if (m_ColorShader) {
 		delete m_ColorShader;
 		m_ColorShader = 0;
+	}
+	if (m_TextureShader){
+		delete m_TextureShader;
+		m_TextureShader = 0;
 	}
 	if (m_Model) {
 		delete m_Model;
@@ -58,7 +68,7 @@ bool ApplicationClass::Render() {
 
 	m_Model->Render(m_Direct3D->GetDeviceContext());
 
-	bool success = m_ColorShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	bool success = m_TextureShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_Model->GetTexture());
 	if (not success) { return false; }
 
 	m_Direct3D->EndScene();

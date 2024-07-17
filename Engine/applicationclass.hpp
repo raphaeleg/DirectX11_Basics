@@ -4,6 +4,7 @@
 #include "cameraclass.hpp"
 #include "modelclass.hpp"
 #include "colorshaderclass.hpp"
+#include "textureshaderclass.hpp"
 
 static constexpr bool FULL_SCREEN = false;
 static constexpr bool VSYNC_ENABLED = true;
@@ -25,6 +26,8 @@ private:
 	CameraClass* m_Camera = 0;
 	ModelClass* m_Model = 0;
 	ColorShaderClass* m_ColorShader = 0;
+	TextureShaderClass* m_TextureShader = 0;
+	char textureFilename[128] = "../Engine/data/stone01.tga";
 
 	bool Render();
 };
