@@ -22,9 +22,11 @@ private:
 	struct VertexType {
 		XMFLOAT3 position{ 0.0f, 0.0f, 0.0f };
 		XMFLOAT2 texture{ 0.0f, 0.0f };
+		XMFLOAT3 normal{ 0.0f, 0.0f, -1.0f };
 
 		VertexType() {};
 		VertexType(XMFLOAT3 pos, XMFLOAT2 tex) : position(pos), texture(tex) {};
+		VertexType(XMFLOAT3 pos, XMFLOAT2 tex, XMFLOAT3 norm) : position(pos), texture(tex), normal(norm) {};
 	};
 
 	bool InitializeBuffers(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* textureFilename);

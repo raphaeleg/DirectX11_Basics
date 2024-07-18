@@ -7,58 +7,49 @@ ApplicationClass::ApplicationClass(int screenWidth, int screenHeight, HWND hwnd)
 		return;
 	}
 
-	m_Camera = new CameraClass;
-	m_Camera->SetPosition(0.0f, 0.0f, -5.0f);
+	XMFLOAT3 camPos{ 0.0f, 0.0f, -5.0f };
+	m_Camera = new CameraClass(camPos);
 
 	m_Model = new ModelClass(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), textureFilename);
-	if (not m_Model->isInitialized)
-	{
+	if (not m_Model->isInitialized) {
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 		return;
 	}
 
-	m_TextureShader = new TextureShaderClass(m_Direct3D->GetDevice(), hwnd);
-	if (not m_TextureShader->isInitialized) {
-		MessageBox(hwnd, L"Could not initialize the texture shader object.", L"Error", MB_OK);
+	m_LightShader = new LightShaderClass(m_Direct3D->GetDevice(), hwnd);
+	if (not m_LightShader->isInitialized) {
+		MessageBox(hwnd, L"Could not initialize the light shader object.", L"Error", MB_OK);
 		return;
 	}
 
-	m_ColorShader = new ColorShaderClass(m_Direct3D->GetDevice(), hwnd);
-	if (not m_ColorShader->isInitialized) {
-		MessageBox(hwnd, L"Could not initialize the color shader object.", L"Error", MB_OK);
-		return;
-	}
+	XMFLOAT4 diffuseCol{ 1.0f, 1.0f, 1.0f, 1.0f };
+	XMFLOAT3 lDirection{ 0.0f, 0.0f, 1.0f };
+	m_Light = new LightClass(diffuseCol, lDirection);
 
 	isInitialized = true;
 }
 
 ApplicationClass::~ApplicationClass() {
-	if (m_ColorShader) {
-		delete m_ColorShader;
-		m_ColorShader = 0;
-	}
-	if (m_TextureShader){
-		delete m_TextureShader;
-		m_TextureShader = 0;
-	}
-	if (m_Model) {
-		delete m_Model;
-		m_Model = 0;
-	}
-	if (m_Camera) {
-		delete m_Camera;
-		m_Camera = 0;
-	}
-	if (m_Direct3D) {
-		delete m_Direct3D;
-		m_Direct3D = 0;
-		m_Camera = 0;
-		m_Model = 0;
-		m_ColorShader = 0;
-	}
+	Delete(m_Light);
+	Delete(m_LightShader);
+	Delete(m_Model);
+	Delete(m_Camera);
+	Delete(m_Direct3D);
 }
 
-bool ApplicationClass::Render() {
+void ApplicationClass::Delete(const void* item) {
+	if (!item) { return; }
+	delete item;
+	item = 0;
+}
+bool ApplicationClass::Frame() {
+	static float rotation = 0.0f;
+	rotation -= 0.0174532925f * 0.5f;
+	if (rotation < 0.0f) { rotation += 360.0f; }
+	return Render(rotation); 
+}
+
+bool ApplicationClass::Render(float rotation ) {
 	m_Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 	m_Camera->Render();
 
@@ -66,9 +57,12 @@ bool ApplicationClass::Render() {
 	XMMATRIX viewMatrix = m_Camera->GetViewMatrix();
 	XMMATRIX projectionMatrix = m_Direct3D->GetProjectionMatrix();
 
+	worldMatrix = XMMatrixRotationY(rotation);
+
 	m_Model->Render(m_Direct3D->GetDeviceContext());
 
-	bool success = m_TextureShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_Model->GetTexture());
+	bool success = m_LightShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_Model->GetTexture(),
+		m_Light->GetDirection(), m_Light->GetDiffuseColor());
 	if (not success) { return false; }
 
 	m_Direct3D->EndScene();

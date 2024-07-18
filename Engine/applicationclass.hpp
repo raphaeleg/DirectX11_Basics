@@ -5,6 +5,8 @@
 #include "modelclass.hpp"
 #include "colorshaderclass.hpp"
 #include "textureshaderclass.hpp"
+#include "lightshaderclass.hpp"
+#include "lightclass.hpp"
 
 static constexpr bool FULL_SCREEN = false;
 static constexpr bool VSYNC_ENABLED = true;
@@ -20,7 +22,7 @@ public:
 	ApplicationClass(const ApplicationClass&) { isInitialized = true; }
 	~ApplicationClass();
 
-	bool Frame() { return Render(); }
+	bool Frame();
 private:
 	D3DClass* m_Direct3D = 0;
 	CameraClass* m_Camera = 0;
@@ -28,6 +30,9 @@ private:
 	ColorShaderClass* m_ColorShader = 0;
 	TextureShaderClass* m_TextureShader = 0;
 	char textureFilename[128] = "../Engine/data/stone01.tga";
+	LightShaderClass* m_LightShader = 0;
+	LightClass* m_Light = 0;
 
-	bool Render();
+	bool Render(float);
+	void Delete(const void *);
 };

@@ -45,6 +45,9 @@
     <ClCompile Include="textureclass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lightshaderclass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="applicationclass.hpp">
@@ -74,11 +77,19 @@
     <ClInclude Include="textureclass.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="lightshaderclass.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lightclass.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="color.vs" />
     <None Include="color.ps" />
     <None Include="texture.vs" />
     <None Include="texture.ps" />
+    <None Include="light.vs" />
+    <None Include="light.ps" />
   </ItemGroup>
 </Project>

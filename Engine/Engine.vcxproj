@@ -24,6 +24,8 @@
     <ClInclude Include="colorshaderclass.hpp" />
     <ClInclude Include="d3dclass.hpp" />
     <ClInclude Include="inputclass.hpp" />
+    <ClInclude Include="lightclass.hpp" />
+    <ClInclude Include="lightshaderclass.hpp" />
     <ClInclude Include="modelclass.hpp" />
     <ClInclude Include="systemclass.hpp" />
     <ClInclude Include="textureclass.hpp" />
@@ -35,6 +37,7 @@
     <ClCompile Include="colorshaderclass.cpp" />
     <ClCompile Include="d3dclass.cpp" />
     <ClCompile Include="inputclass.cpp" />
+    <ClCompile Include="lightshaderclass.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="systemclass.cpp" />
@@ -44,6 +47,8 @@
   <ItemGroup>
     <None Include="color.ps" />
     <None Include="color.vs" />
+    <None Include="light.ps" />
+    <None Include="light.vs" />
     <None Include="texture.ps" />
     <None Include="texture.vs" />
   </ItemGroup>

@@ -8,7 +8,7 @@ static constexpr auto RADIANS = 0.0174532925f;
 class CameraClass
 {
 public:
-	CameraClass() {};
+	CameraClass(XMFLOAT3 pos) : position(pos) {};
 	CameraClass(const CameraClass&) {};
 	~CameraClass() {};
 
