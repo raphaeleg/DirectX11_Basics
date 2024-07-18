@@ -92,4 +92,7 @@
     <None Include="light.vs" />
     <None Include="light.ps" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="cube.txt" />
+  </ItemGroup>
 </Project>

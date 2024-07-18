@@ -30,6 +30,7 @@ private:
 	ColorShaderClass* m_ColorShader = 0;
 	TextureShaderClass* m_TextureShader = 0;
 	char textureFilename[128] = "../Engine/data/stone01.tga";
+	char modelFilename[128] = "../Engine/data/cube.txt";
 	LightShaderClass* m_LightShader = 0;
 	LightClass* m_Light = 0;
 

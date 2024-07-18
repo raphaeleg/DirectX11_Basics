@@ -10,7 +10,7 @@ ApplicationClass::ApplicationClass(int screenWidth, int screenHeight, HWND hwnd)
 	XMFLOAT3 camPos{ 0.0f, 0.0f, -5.0f };
 	m_Camera = new CameraClass(camPos);
 
-	m_Model = new ModelClass(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), textureFilename);
+	m_Model = new ModelClass(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), modelFilename, textureFilename);
 	if (not m_Model->isInitialized) {
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 		return;
@@ -44,7 +44,7 @@ void ApplicationClass::Delete(const void* item) {
 }
 bool ApplicationClass::Frame() {
 	static float rotation = 0.0f;
-	rotation -= 0.0174532925f * 0.5f;
+	rotation -= 0.0174532925f * 0.3f;
 	if (rotation < 0.0f) { rotation += 360.0f; }
 	return Render(rotation); 
 }

@@ -1,8 +1,10 @@
 #include "modelclass.hpp"
 
-bool ModelClass::InitializeBuffers(ID3D11Device * device, ID3D11DeviceContext* deviceContext, char* textureFilename)
+bool ModelClass::InitializeBuffers(ID3D11Device * device, ID3D11DeviceContext* deviceContext, char* modelFilename, char* textureFilename)
 {
-	bool success = LoadTexture(device, deviceContext, textureFilename);
+	bool success = LoadModel(modelFilename);
+	if (!success) { return false; }
+	success = LoadTexture(device, deviceContext, textureFilename);
 	if (!success) { return false; }
 
 	// Load the vertex array with data.
@@ -16,6 +18,16 @@ bool ModelClass::InitializeBuffers(ID3D11Device * device, ID3D11DeviceContext* d
 
 	unsigned long* indices = new unsigned long[indexCount]{ 0,1,2 };	// Create the index array.
 	if (not indices) { return false; }
+
+	// Load the vertex array and index array with data.
+	for (int i = 0; i < vertexCount; i++) {
+		vertices[i].position = m_model[i].GetPosition();
+		vertices[i].texture = m_model[i].GetTexture();
+		vertices[i].normal = m_model[i].GetNormal();
+
+		indices[i] = i;
+	}
+
 
 	D3D11_BUFFER_DESC vertexBufferDesc = BufferDesc(sizeof(VertexType) * vertexCount);
 	D3D11_SUBRESOURCE_DATA vertexData = Data(vertices);
@@ -31,6 +43,38 @@ bool ModelClass::InitializeBuffers(ID3D11Device * device, ID3D11DeviceContext* d
 	vertices = 0;
 	delete[] indices;
 	indices = 0;
+
+	return true;
+}
+
+bool ModelClass::LoadModel(char* filename) {
+	std::ifstream fin;
+	fin.open(filename);
+	if (fin.fail())	{ return false; }
+
+	// Read up to the value of vertex count.
+	char input = 0;
+	fin.get(input);
+	while (input != ':') { fin.get(input); }
+
+	fin >> vertexCount;			// Read in the vertex count.
+	indexCount = vertexCount;	// Set the number of indices to be the same as the vertex count.
+
+	// Create the model using the vertex count that was read in.
+	m_model = new ModelType[vertexCount];
+
+	// Read up to the beginning of the data.
+	fin.get(input);
+	while (input != ':') { fin.get(input); }
+	fin.get(input);
+	fin.get(input);
+
+	for (int i = 0; i < vertexCount; i++)	{
+		fin >> m_model[i].x >> m_model[i].y >> m_model[i].z;
+		fin >> m_model[i].tu >> m_model[i].tv;
+		fin >> m_model[i].nx >> m_model[i].ny >> m_model[i].nz;
+	}
+	fin.close();
 
 	return true;
 }
@@ -57,7 +101,10 @@ D3D11_SUBRESOURCE_DATA ModelClass::Data(const void* v) const {
 }
 
 void ModelClass::ShutdownBuffers() {
-	ReleaseTexture();
+	if (m_Texture){
+		delete m_Texture;
+		m_Texture = 0;
+	}
 	if (indexBuffer) {
 		indexBuffer->Release();
 		indexBuffer = 0;
@@ -65,6 +112,10 @@ void ModelClass::ShutdownBuffers() {
 	if (vertexBuffer) {
 		vertexBuffer->Release();
 		vertexBuffer = 0;
+	}
+	if (m_model){
+		delete[] m_model;
+		m_model = 0;
 	}
 }
 
@@ -80,9 +131,4 @@ void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext) const {
 bool ModelClass::LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* filename) {
 	m_Texture = new TextureClass(device, deviceContext, filename);
 	return m_Texture->isInitialized;
-}
-void ModelClass::ReleaseTexture() {
-	if (!m_Texture) { return; }
-	delete m_Texture;
-	m_Texture = 0;
 }
